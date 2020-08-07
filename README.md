@@ -4,7 +4,7 @@ If you are working with GCE Instances and those don't need to be up all the time
 
 ## Solution Arcchitecture
 
-![](https://storage.googleapis.com/gweb-cloudblog-publish/images/GCP_cloud_scheduler.max-1400x1400.png =626x332)
+<img src="https://storage.googleapis.com/gweb-cloudblog-publish/images/GCP_cloud_scheduler.max-1400x1400.png" alt="Schedule Instance Architecture" width="636"/>
 
 ## Requirements
 
