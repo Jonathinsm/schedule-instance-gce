@@ -15,9 +15,10 @@ If you are working with GCE Instances and those don't need to be up all the time
 
 ## How to deploy
 
-1. Install the [Google SDK](https://cloud.google.com/sdk/docs/quickstarts) in your computer or use the Cloud Shell.
-2. Log In in your GCP project.
-3. Set the environment variables.
+1. Use the Cloud Shell or Install the [Google SDK](https://cloud.google.com/sdk/docs/quickstarts) in your computer.
+2. Clone this repository.
+3. Log In in your GCP project.
+4. Set the environment variables.
 
 ```bash
 export PROJECT_ID=myprojectid
@@ -25,13 +26,13 @@ export SA_NAME=sa-name
 export ZONE=us-central1
 ```
 
-4. Run the deploy-project file.
+5. Run the deploy-project file.
 
 ```bash
 sh deploy.sh
 ```
 
-5. [Create a Cloud Scheduler Job](https://cloud.google.com/scheduler/docs/quickstart) with the payload.
+6. [Create a Cloud Scheduler Job](https://cloud.google.com/scheduler/docs/quickstart) with the payload.
 
 ```text
  {

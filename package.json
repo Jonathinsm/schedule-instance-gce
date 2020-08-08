@@ -2,11 +2,11 @@
   "name": "schedule-instance",
   "version": "0.1.0",
   "private": true,
-  "license": "Apache-2.0",
-  "author": "Google Inc.",
+  "license": "MIT",
+  "author": "Jonathinsm.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
+    "url": "https://github.com/Jonathinsm/schedule-instance-gce.git"
   },
   "engines": {
     "node": ">=10.0.0"
