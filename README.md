@@ -23,7 +23,7 @@ If you are working with GCE Instances and those don't need to be up all the time
 ```bash
 export PROJECT_ID=myprojectid
 export SA_NAME=sa-name
-export ZONE=us-central1
+export REGION=us-central1
 ```
 
 5. Run the deploy-project file.
@@ -36,7 +36,7 @@ sh deploy.sh
 
 ```text
  {
-     "zone":"us-central1-a",
-     "label":"env=dev"
+     "zone":"us-central1-a",  //The zone of the instances
+     "label":"env=dev"       //The label of the instances
  }
 ```

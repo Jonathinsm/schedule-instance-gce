@@ -30,7 +30,7 @@ gcloud functions deploy startInstancePubSub \
 --trigger-resource start-instances \
 --trigger-event google.pubsub.topic.publish \
 --memory 128MB \
---region $ZONE \
+--region $REGION \
 --service-account $SA_K8S
 
 gcloud functions deploy stopInstancePubSub \
@@ -38,5 +38,5 @@ gcloud functions deploy stopInstancePubSub \
 --trigger-resource stop-instances \
 --trigger-event google.pubsub.topic.publish \
 --memory 128MB \
---region $ZONE \
+--region $REGION \
 --service-account $SA_K8S
