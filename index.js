@@ -12,17 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// [START functions_start_instance_pubsub]
-// [START functions_stop_instance_pubsub]
+// [START function_manager_instance_pubsub]
 const Compute = require('@google-cloud/compute');
 const compute = new Compute();
 
 /**
- * Starts Compute Engine instances.
+ * Start and Stop Compute Engine instances.
  *
  * Expects a PubSub message with JSON-formatted event data containing the
  * following attributes:
  * {
+ * "action":"stop",        //the action to execute.
  * "zone":"us-central1-a", //the GCP zone the instances are located in.
  * "label":"env=dev"       //the label of instances to start.
  * }
@@ -31,28 +31,46 @@ const compute = new Compute();
  * @param {!object} callback Cloud Function PubSub callback indicating
  *  completion.
  */
-exports.startInstancePubSub = async (event, context, callback) => {
+exports.instanceManagerPubSub = async (event, context, callback) => {
   try {
     const payload = _validatePayload(
       JSON.parse(Buffer.from(event.data, 'base64').toString())
     );
+    console.log(payload);
     const options = {filter: `labels.${payload.label}`};
-    console.log(options)
     const [vms] = await compute.getVMs(options);
-  
+
+    //Validation result getVMs
     if ( vms.length === 0 || vms === undefined || vms === null ){
-      console.log('Instances not found')
+      const message= 'Instances not found with label ' + payload.label;
+      throw new Error(message);
     } else {
       await Promise.all(
         vms.map(async (instance) => {
+          //Validation zone
           if (payload.zone === instance.zone.id) {
-            const [operation] = await compute
+            //Validation action
+            if (payload.action === 'start')  {
+              const [operation] = await compute
               .zone(payload.zone)
               .vm(instance.name)
               .start();
-              console.log('Starting instance',instance.name)
-            // Operation pending.
-            return operation.promise();
+              console.log('Starting instance',instance.name);
+              return operation.promise();
+
+            } else if (payload.action === 'stop') {
+              const [operation] = await compute
+              .zone(payload.zone)
+              .vm(instance.name)
+              .stop();
+              console.log('Stoping instance',instance.name);
+              return operation.promise();
+
+            } else {
+              const message= 'Invalid Action: ' + payload.action;
+              throw new Error(message);
+            }
+
           }else{
             console.log('The instance',instance.name,'dont match with the zone', payload.zone)
             return Promise.resolve();
@@ -72,71 +90,19 @@ exports.startInstancePubSub = async (event, context, callback) => {
 };
 
 /**
- * Stops Compute Engine instances.
- *
- * Expects a PubSub message with JSON-formatted event data containing the
- * following attributes:
- * {
- * "zone":"us-central1-a", //the GCP zone the instances are located in.
- * "label":"env=dev"       //the label of instances to start.
- * }
- *
- * @param {!object} event Cloud Function PubSub message event.
- * @param {!object} callback Cloud Function PubSub callback indicating completion.
- */
-exports.stopInstancePubSub = async (event, context, callback) => {
-  try {
-    const payload = _validatePayload(
-      JSON.parse(Buffer.from(event.data, 'base64').toString())
-    );
-    const options = {filter: `labels.${payload.label}`};
-    console.log(options)
-    const [vms] = await compute.getVMs(options);
-
-    if ( vms.length === 0 || vms === undefined || vms === null ) {
-      console.log('Instances not found')
-    } else {
-      await Promise.all(
-        vms.map(async (instance) => {
-          if (payload.zone === instance.zone.id) {
-            const [operation] = await compute
-              .zone(payload.zone)
-              .vm(instance.name)
-              .stop();
-              console.log('Stoping instance',instance.name)
-            // Operation pending.
-            return operation.promise();
-          } else {
-            console.log('The instance',instance.name,'dont match with the zone', payload.zone)
-            return Promise.resolve();
-          }
-        })
-      );
-      // Operation complete.
-      const message = `Operation completed`;
-      console.log(message);
-      callback(null, message);
-    }
-  } catch (err) {
-    console.log(err);
-    callback(err);
-  }
-};
-// [START functions_start_instance_pubsub]
-
-/**
  * Validates that a request payload contains the expected fields.
  *
  * @param {!object} payload the request payload to validate.
  * @return {!object} the payload object.
  */
 const _validatePayload = (payload) => {
-  if (!payload.zone) {
+  if (!payload.action) {
+    throw new Error(`Attribute 'action' missing from payload`);
+  } else if (!payload.zone) {
     throw new Error(`Attribute 'zone' missing from payload`);
   } else if (!payload.label) {
     throw new Error(`Attribute 'label' missing from payload`);
   }
   return payload;
 };
-// [END functions_start_instance_pubsub]
-// [END functions_stop_instance_pubsub]
+// [END function_manager_instance_pubsub]

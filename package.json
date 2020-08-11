@@ -2,7 +2,7 @@
   "name": "schedule-instance",
   "version": "0.1.0",
   "private": true,
-  "license": "MIT",
+  "license": "Apache 2.0",
   "author": "Jonathinsm.",
   "repository": {
     "type": "git",
@@ -11,8 +11,7 @@
   "engines": {
     "node": ">=10.0.0"
   },
-  "scripts": {
-  },
+  "scripts": {},
   "dependencies": {
     "@google-cloud/compute": "^2.0.0"
   }

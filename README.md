@@ -8,8 +8,7 @@ If you are working with GCE Instances and those don't need to be up all the time
 
 ## Requirements
 
-* Cloud Shell
-* Google SDK
+* Cloud Shell or Google SDK
 * GCP permissions recomended (Editor, Owner).
 * Create your instances with labels for example: `env=dev`
 
@@ -32,10 +31,11 @@ export REGION=us-central1
 sh deploy.sh
 ```
 
-6. [Create a Cloud Scheduler Job](https://cloud.google.com/scheduler/docs/quickstart) with the payload.
+6. [Create a Cloud Scheduler Job](https://cloud.google.com/scheduler/docs/quickstart) with the Pub/Sub target and following payload.
 
 ```text
  {
+     "action":"stop" ,         //Action to execute
      "zone":"us-central1-a",  //The zone of the instances
      "label":"env=dev"       //The label of the instances
  }

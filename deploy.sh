@@ -7,36 +7,26 @@ gcloud iam service-accounts create $SA_NAME \
     --description="Service account for shchedule stop and start GCE Instances" \
     --display-name=$SA_NAME
 
-export SA_K8S=$SA_NAME"@"$PROJECT_ID".iam.gserviceaccount.com"
+export FUNCTION_SA=$SA_NAME"@"$PROJECT_ID".iam.gserviceaccount.com"
 
 echo --------------------------------
 echo ------------Adding permissions to GCE to the Service Account
 echo --------------------------------
 gcloud projects add-iam-policy-binding $PROJECT_ID \
-    --member=serviceAccount:$SA_K8S --role=roles/compute.admin
+    --member=serviceAccount:$FUNCTION_SA --role=roles/compute.admin
 
 echo --------------------------------
-echo ------------Creating Pub/Sub Topics
+echo ------------Creating Pub/Sub Topic
 echo --------------------------------
-gcloud pubsub topics create stop-instances
-
-gcloud pubsub topics create start-instances
+gcloud pubsub topics create schedule-instances
 
 echo --------------------------------
-echo ------------Deploying Stop and Start Functions
+echo ------------Deploying Function
 echo --------------------------------
-gcloud functions deploy startInstancePubSub \
+gcloud functions deploy instanceManagerPubSub \
 --runtime nodejs10 \
---trigger-resource start-instances \
+--trigger-resource schedule-instances \
 --trigger-event google.pubsub.topic.publish \
 --memory 128MB \
 --region $REGION \
---service-account $SA_K8S
-
-gcloud functions deploy stopInstancePubSub \
---runtime nodejs10 \
---trigger-resource stop-instances \
---trigger-event google.pubsub.topic.publish \
---memory 128MB \
---region $REGION \
---service-account $SA_K8S
+--service-account $FUNCTION_SA
